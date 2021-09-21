@@ -38,29 +38,21 @@ while game_on == 1:
         try:
             time_check = int(mins) + int(hours)
         except:
-            messagebox.showinfo('FAIL', 'Can only accept whole numbers (no strings or signs)')
+            messagebox.showinfo('FAIL', 'Can only accept whole numbers (no strings or signs).')
             hours = '0'
             mins = '1'
             game_on = 2
         time_root.destroy()
         return None
 
-    start = T.Button(time_root, text='Start game', command=start).grid(column=1, row=4, sticky=T.W, pady=4)
-    time_root.title("Set time")
-    time_root.mainloop()
+    def finnish():
+        """Exit program"""
+        global game_on
+        game_on = 0
+        root.destroy()
+        return None
 
-    time_input = '{}:{}:00'.format(hours, mins)
-    game_time = datetime.strptime(time_input, '%H:%M:%S')
-    white_time = game_time
-    black_time = game_time
-    white = datetime.strftime(game_time, '%H:%M:%S')
-    black = datetime.strftime(game_time, '%H:%M:%S')
-    white_moove = 0
-    root = T.Tk()
-    root.geometry(size_pos)
-    root.title("Game on!")
-
-    def pass_turn():
+    def pass_turn(self):
         """Passes the turn between players"""
         global white_moove
         if white_moove == 0:
@@ -75,25 +67,40 @@ while game_on == 1:
         game_on = 2
         return None
 
+    start = T.Button(time_root, text='Start game', command=start).grid(column=1, row=4, sticky=T.W, pady=4)
+    time_root.title("Set time")
+    time_root.mainloop()
+    time_input = '{}:{}:00'.format(hours, mins)
+    game_time = datetime.strptime(time_input, '%H:%M:%S')
+    white_time = game_time
+    black_time = game_time
+    white = datetime.strftime(game_time, '%H:%M:%S')
+    black = datetime.strftime(game_time, '%H:%M:%S')
+    white_moove = 0
+
+    root = T.Tk()
+    root.geometry(size_pos)
+    root.title("Game on!")
     root.bind('<Return>', pass_turn)
     pass_button = T.Button(root, text='Press ENTER to pass turn', command=pass_turn)
     restart_button = T.Button(root, text='Restart', command=restart)
+    exit_button = T.Button(root, text='Exit', command=finnish)
     timer = T.Label(root, text=f'White: {white} Black: {black}')
     timer.pack()
     pass_button.pack() 
     restart_button.pack()
+    exit_button.pack()
 
     def start_timer():
         """Start the timer, white opens. If input was invalid timer will not start."""
         global white, black, white_time, black_time, game_on
         if game_on == 1:
+            interval = 1
             if white_moove == 0:
-                interval = 1
                 white_time = white_time - timedelta(seconds=interval)
                 white = datetime.strftime(white_time, '%H:%M:%S')
                 timer.config(text=f'White: {white}    Black: {black}')
             else:
-                interval = 1
                 black_time = black_time - timedelta(seconds=interval)
                 black = datetime.strftime(black_time, '%H:%M:%S')
                 timer.config(text=f'White: {white}    Black: {black}')
